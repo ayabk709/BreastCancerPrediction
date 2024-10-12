@@ -1,0 +1,526 @@
+<!--GUI for Breast Cancer Detection Application using SVM-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Bootstrap CSS -->
+  <link
+  href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css"
+  rel="stylesheet"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+  />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+ 
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+  <link
+  href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css"
+  rel="stylesheet"
+/>
+  <style>
+    /*just bg and body style*/
+    .container {
+      border-radius: 5px;
+      text-align: center;
+      margin-top: 70px;
+  }
+
+  .btn-container {
+      background: white;
+      box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+      border-radius: 5px;
+      padding: 10px;
+  }
+
+  .head {
+      font-weight: bolder;
+  }
+
+  .btn-primary {
+      border-color: #ff33f !important;
+      color: #ffffff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+      background-color: #de5499 !important;
+      border-color: #de5499 !important;
+      padding: 5px;
+      margin-left: 200px;
+  }
+
+  label {
+      width: 50%;
+  }
+
+  #predict {
+      display: none;
+  }
+
+  .form-group {
+      padding: 2px;
+      display: inline-flex;
+      align-items: center; 
+  }
+  .hover-message {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1;
+    font-size: 12px;
+    margin-top: -90px; /* Adjust vertical alignment */
+    margin-left: 120px; 
+}
+
+.form-group:hover .hover-message {
+    display: block;
+}
+.profile-dropdown-list {
+    display: none;
+}
+
+.profile-dropdown-list.active {
+    display: block;
+}
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #6c757d;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the input */
+  left: 50%;
+  margin-left: -100px; /* Use half of the width to center-align */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #6c757d transparent transparent transparent;
+}
+
+/* Show the tooltip text when hovering */
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+h1 {
+  font-size: 2.5em; /* Adjust the font size of the heading */
+  color: #333333; /* Optional: Set text color */
+  margin-bottom: 15px; /* Add space below the heading */
+}
+
+p {
+  font-size: 1.1em; /* Adjust the font size of the paragraph */
+  color: #666666; /* Optional: Set text color */
+}
+
+  </style>
+  <!--Font Awesome-->
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <header style="background-image: linear-gradient(
+    rgba(252, 202, 210, 0.9), /* Light Pink color with 90% opacity */
+    rgba(255, 182, 193, 0.7) /* Light Pink color with 70% opacity */
+  ),
+  url('{{ url_for('static', filename='2.JPG') }}');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.9;">
+  <nav class="section__container nav__container">
+    <div class="nav__logo">
+      <img src="{{ url_for('static', filename='logos-1.png') }}" alt="BreastCancerDetection Logo" style="width: 230px; height: auto;">
+    </div>
+    
+    <ul class="nav__links">
+      <li class="link"><a href="{{ url_for('home') }}">Home</a>
+</li>
+<li class="link"><a href="{{ url_for('history') }}">History</a>
+</li>
+      <li class="link"><a href="{{ url_for('about') }}">About Us</a>
+      </li>
+      <li class="link"><a href="{{ url_for('contact') }}">Contact Us</a>
+      </li>
+  
+        </li>
+    </ul>
+    
+    <div class="profile-dropdown">
+      <div class="profile-dropdown-btn" onclick="toggleDropdown()">
+        <div class="profile-img" style="background-image: url('{{ url_for('static', filename='img-login.svg') }}');">
+          <i class="fa-solid fa-circle status-indicator"></i>
+        </div>
+        <span class="user-name">{{ current_user.username }}<i class="fa-solid fa-angle-down"></i></span>
+
+      </div>
+      <ul class="profile-dropdown-list">
+        <li class="profile-dropdown-list-item">
+          <a href="{{ url_for('profile') }}">
+            <i class="fa-regular fa-user"></i>
+            Edit Profile
+          </a>
+        </li>
+        <hr />
+        <li class="profile-dropdown-list-item">
+          <a href="{{ url_for('logout') }}">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Log out
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    
+  </nav>
+  <div class="section__container header__container">
+    <div class="header__content">
+      <h1>Providing an Exceptional Patient Experience</h1>
+      <p >
+        Welcome, where exceptional patient experiences are our priority.
+        With compassionate care, state-of-the-art facilities, and a
+        patient-centered approach, we're dedicated to your well-being. Trust
+        us with your health and experience the difference.
+      </p>
+    </div>
+  </div>
+</header>
+</br>
+</br>
+<body>
+  <div class="container">
+    <div class="row">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-container">
+                <!-- Main Input For Receiving Query to our ML -->
+                <form action="{{ url_for('predict')}}" method="post" class="form-inline" novalidate>
+                  <div class="row">
+                      <div class="col-md-6">
+                          <img class="image" src="{{url_for('static', filename='img.jpeg')}}" width="100%" height="100%" />
+                      </div>
+                      <div class="col-md-6">
+                          <div class="container">
+                              <h4>Enter Cell Details</h4>
+                              <div class="form-group tooltip-container">
+                                  <label for="clump_thickness">Clump Thickness</label>
+                                  <input type="text" class="form-control" name="clump_thickness" required="required">
+                                  <span class="tooltip-text">Clump Thickness is the thickness of the clump.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="uniform_cell_size">Uniform Cell Size</label>
+                                  <input type="text" class="form-control" name="uniform_cell_size" required="required">
+                                  <span class="tooltip-text">Uniform Cell size refers to the uniformity of cell sizes.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="uniform_cell_shape">Uniform Cell Shape</label>
+                                  <input type="text" class="form-control" name="uniform_cell_shape" required="required">
+                                  <span class="tooltip-text">Uniform Cell shape refers to the uniformity of cell shapes.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="marginal_adhesion">Marginal Adhesion</label>
+                                  <input type="text" class="form-control" name="marginal_adhesion" required="required">
+                                  <span class="tooltip-text">Marginal Adhesion is the adhesion of cells to surrounding cells.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="single_epithelial_size">Single Epithelial Cell Size</label>
+                                  <input type="text" class="form-control" name="single_epithelial_size" required="required">
+                                  <span class="tooltip-text">Single Epithelial Cell Size refers to the size of single epithelial cells.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="bare_nuclei">Bare Nuclei</label>
+                                  <input type="text" class="form-control" name="bare_nuclei" required="required">
+                                  <span class="tooltip-text">Bare Nuclei refers to the presence of bare nuclei in cells.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="bland_chromatin">Bland Chromatin</label>
+                                  <input type="text" class="form-control" name="bland_chromatin" required="required">
+                                  <span class="tooltip-text">Bland Chromatin refers to the blandness of chromatin.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="normal_nucleoli">Normal Nucleoli</label>
+                                  <input type="text" class="form-control" name="normal_nucleoli" required="required">
+                                  <span class="tooltip-text">Normal Nucleoli refers to the normality of nucleoli.</span>
+                              </div>
+                              <div class="form-group tooltip-container">
+                                  <label for="mitoses">Mitoses</label>
+                                  <input type="text" class="form-control" name="mitoses" required="required">
+                                  <span class="tooltip-text">Mitoses refers to the presence of mitoses in cells.</span>
+                              </div>
+                              <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 20px;">Predict</button>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+            </div>
+            <br />
+            <center>
+                <h1 style="background-color: rgba(255, 192, 203, 0.9); border-radius: 10px; box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);">{{ prediction_text }}</h1>
+            </center>
+            <br />
+            <div class="row" style="margin-top: -5px; margin-left:-150px ; margin-bottom:20px">
+                <div class="col-md-12">
+                    <div class="btn-group" role="group" aria-label="Chart Toggle Buttons">
+                        <button type="button" class="btn btn-primary chart-toggle" data-target="myChart">Bar Chart</button>
+                        <button type="button" class="btn btn-primary chart-toggle" data-target="pieChart">Pie Chart</button>
+                          <!-- Add this button to your HTML template -->
+                    <a href="/generate_pdf?prediction_text={{ prediction_text }}&chart_data={{ chart_data | join(',') }}" class="btn btn-primary btn-lg">Generate PDF</a>
+
+                      </div>
+               
+               
+               
+                      </div>
+            </div>
+            <div class="row">
+                <!-- First Column for the Bar Chart -->
+                <div class="col-md-6">
+                    <canvas id="myChart"></canvas>
+                </div>
+                <!-- Second Column for the Pie Chart -->
+                <div class="col-md-6 pl-md-3">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div> <!-- End of container -->
+
+  
+  <footer class="footer">
+    <div class="section__container footer__container">
+      <div class="footer__col">
+        <h3>BreastCancer
+          <span>Detection</span>
+        </h3>
+        <p>We are honored to be a part of your healthcare journey and committed to delivering compassionate, personalized, and top-notch care every step of the way.</p>
+        <p>Trust us with your health, and let us work together to achieve the best possible outcomes for you and your loved ones.</p>
+      </div>
+      <div class="footer__col">
+        <h4>About Us</h4>
+        <p>Home</p>
+        <p>About Us</p>
+        <p>Terms & Conditions</p>
+      </div>
+      <div class="footer__col">
+        <h4>Contact Us</h4>
+        <p><i class="ri-map-pin-2-fill"></i> 123,Casablanca, Morocco</p>
+        <p><i class="ri-mail-fill"></i> Predict@gmail.com</p>
+        <p><i class="ri-phone-fill"></i> (+212) 65484568</p>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <div class="footer__bar__content">
+        <p>Copyright © 2023 . All rights reserved.</p>
+        <div class="footer__socials">
+          <span><i class="ri-instagram-line"></i></span>
+          <span><i class="ri-facebook-fill"></i></span>
+          <span><i class="ri-heart-fill"></i></span>
+          <span><i class="ri-twitter-fill"></i></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+ 
+     
+  <script>
+    document.getElementById("print_button").addEventListener("click", function() {
+        // Hide the print button before printing
+        document.getElementById("print_button").style.display = "none";
+        window.print();
+        // Show the print button again after printing
+        document.getElementById("print_button").style.display = "block";
+    });
+    </script>
+        
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chartData = {{ chart_data | safe }};
+    var labels = ['Clump Thickness', 'Uniform Cell Size', 'Uniform Cell Shape', 'Marginal Adhesion', 'Single Epithelial Cell Size', 'Bare Nuclei', 'Bland Chromatin', 'Normal Nucleoli', 'Mitoses'];
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Feature Values',
+                data: chartData,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    // Initialize the pie chart
+var pieCtx = document.getElementById('pieChart').getContext('2d');
+var pieChart = new Chart(pieCtx, {
+  type: 'pie',
+  data: {
+      labels: ['Breast cancer', 'No Breast cancer'],
+      datasets: [{
+          label: 'Prediction Result',
+          data: [{{ breast_cancer_count }}, {{ no_breast_cancer_count }}], // Pass the counts from Flask
+          backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'],
+          borderWidth: 1
+      }]
+  },
+  options: {
+      // Add options if needed
+  }
+});
+
+  </script>
+  <script>
+    const profileDropdownBtn = document.querySelector('.profile-dropdown-btn');
+    const profileDropdownList = document.querySelector('.profile-dropdown-list');
+
+    function toggleDropdown() {
+        profileDropdownList.classList.toggle('active');
+    }
+
+    window.addEventListener('click', function(e) {
+        if (!profileDropdownBtn.contains(e.target)) {
+            profileDropdownList.classList.remove('active');
+        }
+    });
+</script>
+  <script>
+  // Initialize the pie chart with counts
+  var pieCtx = document.getElementById('pieChart').getContext('2d');
+  var breastCancerCount = /* provide the count of breast cancer cases */;
+  var noBreastCancerCount = /* provide the count of no breast cancer cases */;
+  var pieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Breast cancer', 'No Breast cancer'],
+        datasets: [{
+            label: 'Prediction Result',
+            data: [breastCancerCount, noBreastCancerCount],
+            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        // Add options if needed
+    }
+  });
+</script>
+  <script>
+    function toggleDropdown() {
+        var profileDropdownList = document.querySelector(".profile-dropdown-list");
+        profileDropdownList.classList.toggle("active");
+    }
+
+    window.addEventListener("click", function (e) {
+        var profileDropdownBtn = document.querySelector(".profile-dropdown-btn");
+        var profileDropdownList = document.querySelector(".profile-dropdown-list");
+        if (!profileDropdownBtn.contains(e.target)) {
+            profileDropdownList.classList.remove("active");
+        }
+    });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get references to the chart canvases
+        var barChartCanvas = document.getElementById('myChart');
+        var pieChartCanvas = document.getElementById('pieChart');
+
+        // Hide the chart canvases initially
+        barChartCanvas.style.display = 'none';
+        pieChartCanvas.style.display = 'none';
+
+        // Get references to the chart toggle buttons
+        var chartToggleButtons = document.querySelectorAll('.chart-toggle');
+
+        // Add event listeners to the chart toggle buttons
+        chartToggleButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                // Hide all chart canvases
+                barChartCanvas.style.display = 'none';
+                pieChartCanvas.style.display = 'none';
+
+                // Get the target canvas ID from the data-target attribute of the button
+                var targetCanvasId = button.getAttribute('data-target');
+                var targetCanvas = document.getElementById(targetCanvasId);
+
+                // Show the selected chart canvas
+                if (targetCanvas) {
+                    targetCanvas.style.display = 'block';
+                }
+            });
+        });
+    });
+</script>
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-KyZXEAg3QhqLMpG8r+Knujsl5/6MN6p6TsG0/ajHrxw=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+      integrity="sha384-ho+j7jyWK8fNQe+A12TKo5lmjnpRSK7hND0mO4iEIoEAyUocNVzGQkX/epHFYuDf" crossorigin="anonymous">
+  </script>
+  <!-- Your existing JavaScript content -->
+
+  <script>
+    // JavaScript function to generate PDF
+    //function generatePDF() {
+        // Redirect to the route for generating PDF
+      //  window.location.href = '/generate_pdf';
+    //}
+</script>
+  
+      </body>
+
+</html>
