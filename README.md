@@ -47,6 +47,9 @@ Use this for prediction for model and to show the output
 ### 6. Adding form to flask app
  
 ### 7.Integrating web application with machine learning backend.
+### 8. User Authentication and History
+User Login: Users can create accounts and log in to access personalized features.
+Consultation History: Each user has a profile that tracks their consultation history, allowing them to revisit past predictions and results.
 
-### 8. Deployment on Heroku
+### 9. Deployment on Heroku
 
