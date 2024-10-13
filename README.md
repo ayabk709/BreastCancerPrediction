@@ -4,9 +4,9 @@
 
 # Breast Cancer Detection Web Application
 
-
 ![Breast Cancer Prediction](screencapture-127-0-0-1-5000-history-2024-10-13-01_02_31.png)
 ![Breast Cancer Prediction](screencapture-127-0-0-1-5000-2024-10-13-01_02_09.png)
+
 
 
 
